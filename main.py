@@ -24,7 +24,7 @@ class eBookReader:
         self._availableBooks = []
         self._purchasedBooks = []
         self._genres = []
-        self._file = open('OOP-challenge\\Resources\\purchasedBooks', 'r')
+        self._file = file
         
 
     # add a book to available books (already populated data)
@@ -40,8 +40,7 @@ class eBookReader:
         for book in self._availableBooks:
             if book._title == bookName:
                 self._purchasedBooks.append(book)
-                print(f"{book._title} has been successfully purchased!")
-                # 
+                #print(f"{book._title} has been successfully purchased!")
                 book._purchases += 1
                 return
         print(f"{bookName} is not available.")
@@ -195,8 +194,15 @@ class eBookReader:
                         max = mid - 1
             print('\t'+f"{userTitle} is not available.")
 
-    def saveAndLoadPurchases(self):
-        print(self._file)
+    def saveAndLoadPurchases(self, file = ''):
+        self._file = open(file, 'w')
+        # additional list for data exporting
+        usedTitles = []
+        for book in self._purchasedBooks:
+            if book._title not in usedTitles:
+                self._file.write({book._title})
+    
+
 
 def main2():
     print() # differentiate betweeen two mains
@@ -226,8 +232,7 @@ def main2():
     userOne.searchAuthor()
     userOne.searchByTitle()
     userOne.filterByGenres()'''
-    userOne.saveAndLoadPurchases()
-
+    userOne.saveAndLoadPurchases('OOP-challenge\Resources\purchasedBooks.txt')
 
 if __name__ == "__main__":
     main2()
