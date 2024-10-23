@@ -20,12 +20,11 @@ class Book:
     
 class eBookReader:
     # init contructor method to initialize lists (data)
-    def __init__(self, file = ''):
+    def __init__(self):
         self._availableBooks = []
         self._purchasedBooks = []
         self._genres = []
-        self._file = file
-        
+        self._titlesBought = []
 
     # add a book to available books (already populated data)
     def addBook(self, book):
@@ -40,7 +39,9 @@ class eBookReader:
         for book in self._availableBooks:
             if book._title == bookName:
                 self._purchasedBooks.append(book)
-                #print(f"{book._title} has been successfully purchased!")
+                if book._title+'\n' not in self._titlesBought:
+                    self._titlesBought.append(book._title+'\n')
+                    print(f"{book._title} has been successfully purchased!")
                 book._purchases += 1
                 return
         print(f"{bookName} is not available.")
@@ -194,18 +195,25 @@ class eBookReader:
                         max = mid - 1
             print('\t'+f"{userTitle} is not available.")
 
-    def saveAndLoadPurchases(self, file = ''):
-        self._file = open(file, 'w')
-        # additional list for data exporting
-        usedTitles = []
+    def saveToFile(self):
+        file = open('Resources/purchasedBooks.txt', 'w')
         for book in self._purchasedBooks:
-            if book._title not in usedTitles:
-                self._file.write({book._title})
+            if book._title not in self._titlesBought:
+                file.write(f"{book._title}"+'\n')
+                self._titlesBought.append(f"{book._title}")
+        file.close()
+        print("File has been successfully saved.")
+
+    def loadFromFile(self):
+        file = open('Resources/purchasedBooks.txt', 'r')
+        loadedTitles = file.readlines()
+        self._titlesBought = loadedTitles
+        file.close()
+        print("File has been successfully loaded.")
+
     
-
-
-def main2():
-    print() # differentiate betweeen two mains
+def main():
+    # print() # differentiate betweeen two mains
 
     # singular instance of eBookReader class
     userOne = eBookReader()
@@ -215,8 +223,9 @@ def main2():
     userOne.addBook(Book("The Jungle Book", "Rudyard Kipling", "277", "Fiction"))
     userOne.addBook(Book("Little Women", "Louisa May Alcott", "449", "Novel"))
     userOne.addBook(Book("The Phantom of the Opera", "Gaston Leroux", "360", "Novel"))
+    userOne.addBook(Book("Snow Crash", "Neil Stephenson", "559", "Fiction"))
 
-    # simulating user actions
+    # simulating user purchases
     for i in range(6):
         userOne.buyBook("Mansfield Park")
     for i in range(1):
@@ -225,14 +234,18 @@ def main2():
         userOne.buyBook("The Phantom of the Opera")
     for i in range(4):
         userOne.buyBook("The Jungle Book")
+    for i in range(10):
+        userOne.buyBook("Snow Crash")
 
-    '''userOne.availableGenres()
+    # simulating user actions
+    userOne.loadFromFile()
+    userOne.availableGenres()
     userOne.trackBookPurchases()
     userOne.topPurchasedBooks()
+    userOne.filterByGenres()
     userOne.searchAuthor()
     userOne.searchByTitle()
-    userOne.filterByGenres()'''
-    userOne.saveAndLoadPurchases('OOP-challenge\Resources\purchasedBooks.txt')
+    userOne.saveToFile()
 
 if __name__ == "__main__":
-    main2()
+    main()
